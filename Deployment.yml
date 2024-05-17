@@ -5,7 +5,7 @@ metadata:
   labels:
     app: test
 spec:
-  replicas: 3
+  replicas: 1
   selector:
     matchLabels:
       app: test
@@ -18,20 +18,19 @@ spec:
       - name: test-cont
         image: mohithdevops/testimage:1
         ports:
-        - containerPort: 8080
+        - containerPort: 80
 ---
 
 apiVersion: v1
 kind: Service
-metadata:  
-  name: nodeport-service
+metadata:
+  name: loadbalancer-service
 spec:
-  selector:    
+  selector:
     app: test
-  type: NodePort
-  ports:  
+  type: LoadBalancer
+  ports:
   - name: http
-    port: 8080
+    port: 80
     targetPort: 8080
-    nodePort: 31000
     protocol: TCP
