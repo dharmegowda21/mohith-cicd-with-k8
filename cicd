@@ -2,37 +2,37 @@ pipeline {
     agent any
 
     stages {
-        stage('clone'){
-            steps{
+        stage('clone') {
+            steps {
                 cleanWs()
                 git branch: 'main', url: 'https://github.com/mohithdevops9/hello_world_public_war.git'
             }
         }
         stage('create binary') {
-            steps{
-                script{
+            steps {
+                script {
                     def mvn = tool 'maven3.9.6';
                     sh "${mvn}/bin/mvn clean install"
                     sh "docker build -t mohithdevops/testimage:$BUILD_NUMBER  -f Dockerfile ."
                 }
             }
         }
-        stage('push image'){
-            steps{
+        stage('push image') {
+            steps {
                 sh "docker login -u mohithdevops -p Manvith@123"
                 sh "docker push mohithdevops/testimage:$BUILD_NUMBER"
             }
         }
         
-        stage('pull image'){
-            steps{
+        stage('pull image') {
+            steps {
                 sh "docker login -u mohithdevops -p Manvith@123"
                 sh "docker pull mohithdevops/testimage:$BUILD_NUMBER"
                 
             }
         }
-        stage('Deploy'){
-            steps{
+        stage('Deploy') {
+            steps {
                 sh "echo $user"
                 sh "aws eks update-kubeconfig --region us-east-1 --name my-eks-cluster"
                 sh "/var/lib/jenkins/bin/kubectl version"
